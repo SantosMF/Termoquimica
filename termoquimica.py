@@ -303,7 +303,7 @@ class Window(QMainWindow):
         H = [] # lista para armazenar entalpia
         G = [] # lista para armazenar energias Gibbs
         A = [] # lista para armazenar energias de Helmholtz
-        with open(path+'/temps/temp.nyp', 'r') as data:
+        with open(path+'/temps/temp.tmp', 'r') as data:
             for lines in data:
                 if 'Funções Termodinâmicas' in lines:
                     data.readline()#, data.readline()
