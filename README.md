@@ -23,12 +23,15 @@ Após inserir os dados, basta clicar em calcular que os dados serão exibidos na
 
 **teclas de atalho para exibir funções separadamente: (Menu Exibir)
 
-  F7  = 'Temperatura x E_interna'
-  F8  = 'Temperatura x Entropia'
-  F9  = 'Temperatura x Entalpia'
-  F10 = 'Temperatura x E_Gibbs'
-  F11 = 'Temperatura x E_Helmholtz'
+F7  = 'Temperatura x E_interna'
+  
+F8  = 'Temperatura x Entropia'
+
+F9  = 'Temperatura x Entalpia'
+
+F10 = 'Temperatura x E_Gibbs'
+
+F11 = 'Temperatura x E_Helmholtz'
 
 Para salvar os dados que estão mostrados na tela basta clicar no botão salvar, fornecer um nome para o arquivo e setar o diretório para ele.
-
 Por padrão, a área de texto é definida como somente leitura. Caso deseje editar os dados basta clicar no botão "Editar".
