@@ -227,6 +227,6 @@ Energia de Ponto Zero   = {ZPE(m):^25.6f}  kJ/mol\n''')
                 A = U - i*S
                 dados.append(str(f"{i:^5.2f}{U:^20.6f}{S:^20.6f}{H:^20.6f}{G:^20.6f}{A:^20.6f}\n"))
             result = "".join(map(str,dados))
-    with open(path+'/temps/temp.nyp', 'w') as temp:
+    with open(path+'/temps/temp.tmp', 'w') as temp:
                 temp.write(result)
     return result
