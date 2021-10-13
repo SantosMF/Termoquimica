@@ -1,9 +1,8 @@
 # Termoquimica.py
-Este software foi desenvolvido para calcular funções termodinâmicas. Para configurá-lo abra um terminal e dê o comando:
+Este código foi desenvolvido para calcular funções termodinâmicas. Para configurá-lo abra um terminal e dê o comando:
 #   ~$ python3 setup.py
-Esse comando vai verificar se as depêndencias do  programa es tão satisfeitas,ca-so não esteja, vai  instala-las automaticamente. Em caso de falha tente instalar manualmente um por um,  nesta ordem.
-   ~$ sudo apt install python3-pip -y
-   ~$ sudo apt install python3-pyqt5 -y
+Isso vai verificar se as depêndencias do  programa estão satisfeitas, caso não esteja, vai tentar instalá-las automaticamente. Em caso de falha, faça manualmente um por um,  nesta ordem.
+   ~$ sudo apt install python3-pip python3-pyqt5 -y
    ~$ python3 -m pip install numpy"
    ~$ python3 -m pip install pyqt5
    ~$ chmod u+x termoquimica.py
