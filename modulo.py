@@ -68,7 +68,7 @@ def ScfRead(scf_out):
             pass
         for lines in outscf:
             if "!" in lines: # localiza a energia eletrônica
-                E_elec = (float(lines[32:50])*1312.7497558593593) # kcal/mol
+                E_elec = (float(lines[32:50])*1312.7497558593593) # kJ/mol
 #---------------término da leitura arquivo *.scf.out--------------------------
     massa = 0
     for i in label:
@@ -150,9 +150,9 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
     Tmin  = float(valores[3]) # temperatura mínima
     Tmax  = float(valores[4]) # temperatura máxima
     dT    = float(valores[8]) # diferença de temperatura
-    P     = float(valores[5]) *101325 ## atm para pascal
+    P     = float(valores[5])*101325 ## atm para pascal
     sigma = int(valores[6]) # número de simetria
-    molt  = str(valores[7]) # linear, não-linear ou mono-atômico
+    molt  = str(valores[7]) # linear, não-linear ou monoatômico
     dados = [] # lista para armazenar os resultados
     dados.append(f'''Energia eletrônica      = {Eel:^25.8f}  kJ/mol
 Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
