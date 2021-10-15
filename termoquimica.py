@@ -20,7 +20,7 @@ class Window(QMainWindow):
     def __init__(self):
         super(QMainWindow, self).__init__()
         self.setWindowTitle(lang.title)
-        self.setFixedSize(1100, 600)
+        self.setFixedSize(1200, 680)
         self.setStyleSheet("background:#808080")
         self.setWindowIcon(QIcon(path+"/temps/ico2.png"))
         self.move(QApplication.desktop().screen().rect().center()- self.rect().center())
@@ -172,7 +172,7 @@ class Window(QMainWindow):
         self.btn6.setStyleSheet("font-size:16px")
 #-------------------área de texto---------------------------------------------
         self.texto = QPlainTextEdit(self)
-        self.texto.setGeometry(475,30,620,560)
+        self.texto.setGeometry(475,30,720,640)
         self.texto.setStyleSheet("background:white")
         self.texto.setReadOnly(True)
         self.texto.setPlaceholderText(lang.f2)
