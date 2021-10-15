@@ -11,7 +11,7 @@ hbar = 1.054571817e-34 #constante de Planck reduzida  J.s
 c = 299792458 # velocidade da luz no vácuo  m/s
 R = 8.314462618 # constante molar dos gases J.mol^-1.K^-1
 N_A = 6.02214076e+23 # constante de Avogadro mol^-1
-MM = 1.660530000E-27 ##fator de conversão massa molecular em Kg
+MM = 1.660530000e-27 ##fator de conversão massa molecular em Kg
 
 #----------------FUNÇÃO PARA LER O ARQUIVO DYNMAT.OUT-------------------------
 def DynRead(dynmat):
