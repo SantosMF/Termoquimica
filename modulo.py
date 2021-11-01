@@ -68,7 +68,7 @@ def ScfRead(scf_out):
             pass
         for lines in outscf:
             if "!" in lines: # localiza a energia eletrônica
-                E_elec = (float(lines[32:50])*1312.7497558593593) # kJ/mol
+                E_elec = (float(lines[32:50])*1312.7496997450642) # kJ/mol
 #---------------término da leitura arquivo *.scf.out--------------------------
     massa = 0
     for i in label:
