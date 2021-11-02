@@ -98,7 +98,7 @@ class Window(QMainWindow):
         self.T_min = QLineEdit(self.grupT)
         self.T_min.setAlignment(QtCore.Qt.AlignRight)
         self.T_min.setGeometry(10, 60, 100, 30)
-        self.T_min.setText('273.15')
+        self.T_min.setText('298.15')
         self.T_min.setStyleSheet("background:#BDBDBD")
         #temperatura máx
         self.temperatura2 = QLabel(self.grupT,text=lang.tmax)
@@ -107,7 +107,7 @@ class Window(QMainWindow):
         self.T_max = QLineEdit(self.grupT)
         self.T_max.setAlignment(QtCore.Qt.AlignRight)
         self.T_max.setGeometry(180, 60, 100, 30)
-        self.T_max.setText('1273.15')
+        self.T_max.setText('600.15')
         self.T_max.setStyleSheet("background:#BDBDBD")
         #delta
         self.delta = QLabel(self.grupT,text=lang.tD)
@@ -224,8 +224,7 @@ class Window(QMainWindow):
                          0, # número de simetria
                          None, #
                          self.deltaT.text()] # Delta
-                #print(dados)
-                resposta = termo.Termo(dados)
+                return termo.Termo(dados)
 #----------------------------Moléculas----------------------------------------
             elif self.molecule.isChecked():# computar sistemas moleculares
 #----------------------------poliatômico--------------------------------------
@@ -241,7 +240,7 @@ class Window(QMainWindow):
                              self.line_sym.text(), # número de simetria
                              lin, # poliatomico
                              self.deltaT.text()] # Delta T
-                    resposta = termo.Termo(dados)
+                    return termo.Termo(dados)
 #-----------------------------------------------------------------------------
 #----------------------------linear-------------------------------------------
                 elif self.linear.isChecked(): # linear
@@ -256,7 +255,7 @@ class Window(QMainWindow):
                              self.line_sym.text(), # número de simetria
                              lin, # poliatomico
                              self.deltaT.text()] # Delta T
-                    resposta = termo.Termo(dados)
+                    return termo.Termo(dados)
 #-----------------------------------------------------------------------------
 #----------------------------monoatômico--------------------------------------
                 elif self.mono.isChecked(): # computar atomos no vácuo
@@ -271,8 +270,7 @@ class Window(QMainWindow):
                              1, # número de simetria self.line_sym.text()
                              lin, # monoatomico
                              self.deltaT.text()] # Delta T
-                    resposta = termo.Termo(dados)
-            return resposta
+                    return termo.Termo(dados)
         else:
             self.messageBox.about(self,lang.erro, lang.erro1)
 #-----------------------------------------------------------------------------
@@ -303,7 +301,7 @@ class Window(QMainWindow):
         H = [] # lista para armazenar entalpia
         G = [] # lista para armazenar energias Gibbs
         A = [] # lista para armazenar energias de Helmholtz
-        with open(path+'/temps/temp.tmp', 'r') as data:
+        with open(path+'/temps/temp.nyp', 'r') as data:
             for lines in data:
                 if 'Funções Termodinâmicas' in lines:
                     data.readline()#, data.readline()
