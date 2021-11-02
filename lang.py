@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-title = 'Termoquimica-1.0'
+copy = 'Copiar'
+copy1 = 'Copia texto para área de transferência'
+save1 = 'Salvar como arquivo .dat'
+edit1 = 'Tornar área de texto editável'
+calcule1 = 'Calcular funções termodinâmicas'
+warning = 'Info'
+title = 'Termoquimica-1.2'
 file = 'Arquivo'
 fecha  = 'Fechar'
 ajuda = 'Ajuda'
@@ -80,3 +86,5 @@ texto3 ='''
         = 313.75470835207074 kcal/mol
         = 2.17987197e-21 kJ
         = 5.21001904875717e-22 kcal'''
+info1 = 'Texto copiado para área de transferência'
+info2 = 'Não há texto para copiar'
