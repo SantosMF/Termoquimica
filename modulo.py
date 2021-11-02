@@ -12,7 +12,7 @@ c = 299792458 # velocidade da luz no vácuo  m/s
 R = 8.314462618 # constante molar dos gases J.mol^-1.K^-1
 N_A = 6.02214076e+23 # constante de Avogadro mol^-1
 MM = 1.660530000e-27 ##fator de conversão massa molecular em Kg
-
+rbohr = 1.8897261246257702 ## raio de Bohr em angstrom
 #----------------FUNÇÃO PARA LER O ARQUIVO DYNMAT.OUT-------------------------
 def DynRead(dynmat):
     cm = [] ## lista contendo as frequencias em Hz
@@ -41,12 +41,15 @@ def ScfRead(scf_out):
     atom = {} # dicionário contendo átomos e massas
     nat = 0 ## número de átomos na célula ## variável global
     ntp = 0 ## número de tipos de átomos ## variável global
+    celldm = 0
 #-----------------abre o arquivo no modo leitura------------------------------
     with open(scf_out, 'r') as outscf:
         for lines in outscf:
             if 'number of atoms/cell' in lines:
                 nat += int(lines[40:45]) ## modifica o valor da variável nat
                 ntp += int((outscf.readline().rstrip().split('='))[1]) #
+            if 'celldm(1)' in lines:
+                celldm = float(lines[17:28])
             if 'mass' in lines: ## busca os tipos de átomos
                 for i in range(0, ntp):
                     key = outscf.readline().split()
@@ -59,16 +62,16 @@ def ScfRead(scf_out):
             for lines in outscf:
                 dados = lines.split()
                 label.append(dados[1]) # armazena os símbolos dos átomos
-                x.append(float(dados[6])) # armazena coordenadas x
-                y.append(float(dados[7])) # armazena coordenadas y
-                z.append(float(dados[8])) # armazena coordenadas z
+                x.append(float(dados[6])*celldm/rbohr) # armazena coordenadas x
+                y.append(float(dados[7])*celldm/rbohr) # armazena coordenadas y
+                z.append(float(dados[8])*celldm/rbohr) # armazena coordenadas z
                # if 'number of k points' in lines:
                 #    break
         except:
             pass
         for lines in outscf:
-            if "!" in lines: # localiza a energia eletrônica
-                E_elec = (float(lines[32:50])*1312.7496997450642) # kJ/mol
+            if "!" in lines: # localiza a energia eletrônica1312.7497558593593
+                E_elec = (float(lines[32:50])*1312.7496997450642) # kcal/mol
 #---------------término da leitura arquivo *.scf.out--------------------------
     massa = 0
     for i in label:
@@ -117,18 +120,21 @@ def Erot(T, tipo):
         e_rot = k*T
     elif tipo == 'nolinear':
         e_rot = (3/2)*k*T
-    #elif tipo == 'atomo': e_rot = 0
+    elif tipo == 'atomo':
+        e_rot = 0
     return e_rot/1000*N_A  ## kJ/mol
 def Srot(T, Trot, TrotX, TrotY, TrotZ, sigma, tipo): # M = massa em kg
+#   Srot(i, 0, TrotX, TrotY, TrotZ, sigma, molt)
     if T == 0:
         s_rot = 0
     else:
         if tipo == 'linear':
             s_rot = (k + k*log((1.0/sigma)*(T/Trot)))/1000*N_A # J/K to kJ/mol*K
-        if tipo == 'nolinear':
-            s_rot = ((3/2)*k + k*log((sqrt(pi)/sigma)*((T**(3/2))/sqrt(TrotX*TrotY*TrotZ))))/1000*N_A
+        elif tipo == 'nolinear':
+            s_rot = ((3/2)*k + k*log((sqrt(pi)/sigma)*((T**(3/2))/sqrt(TrotX*TrotY*TrotZ))))/1000*N_A # J/K to kJ/mol*K
+        elif tipo == 'atomo':
+            s_rot = 0
     return s_rot ## kJ/K*mol
-#-----------------------------------------------------------------------------
 #=====================Função que recebe os dados da gui======================#
 #               valores[0] == solido ou molécula                             #
 #               valores[1] == path do arquivo scf.out                        #
@@ -143,7 +149,7 @@ def Srot(T, Trot, TrotX, TrotY, TrotZ, sigma, tipo): # M = massa em kg
 def Termo(valores): ## valores --> tupla com os dados recebidos da gui
     scf = ScfRead(valores[1]) # dados extraidos do arquivo scf.out
     m = DynRead(valores[2]) # array com os modos vibracionais em m^-1
-    Eel = float(scf[0]) # energia eletrônica em kj/mol
+    Eel = float(scf[0]) # energia eletrônica em kJ/mol
     M = float(scf[1]) # massa em kg
     atom, label, x, y, z = scf[2], scf[3], scf[4], scf[5], scf[6]
     sist  = str(valores[0]) # sólido ou molécula
@@ -152,7 +158,7 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
     dT    = float(valores[8]) # diferença de temperatura
     P     = float(valores[5])*101325 ## atm para pascal
     sigma = int(valores[6]) # número de simetria
-    molt  = str(valores[7]) # linear, não-linear ou monoatômico
+    molt  = str(valores[7]) # linear, não-linear ou mono-atômico
     dados = [] # lista para armazenar os resultados
     dados.append(f'''Energia eletrônica      = {Eel:^25.8f}  kJ/mol
 Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
@@ -196,7 +202,8 @@ Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
             #------------------centro de massa molecula não linear------------
             cX, cY, cZ = 0, 0, 0 # centro de massa
             for A, X, Y, Z in zip(label, x, y, z):
-                cX, cY, cZ = cX+(atom[A]*X)/M, cY+(atom[A]*Y)/M, cZ+(atom[A]*Z)/M
+                cX, cY, cZ = cX+(atom[A]*X), cY+(atom[A]*Y), cZ+(atom[A]*Z)
+            cX, cY, cZ = cX/M, cY/M, cZ/M ### angstrom
             inerciaX = 0
             inerciaY = 0 # momentos de inércia
             inerciaZ = 0
@@ -208,7 +215,6 @@ Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
             TrotX = (h**2)/(2*inerciaX*k*4*(pi**2))
             TrotY = (h**2)/(2*inerciaY*k*4*(pi**2))
             TrotZ = (h**2)/(2*inerciaZ*k*4*(pi**2))
-
             for i in arange(Tmin, Tmax+dT, dT):
                 U = ZPE(m) + Eel + Evib(i, m) + Etrans(i) + Erot(i, molt)
                 S = Svib(i, m) + Strans(i, P, M) + Srot(i, 0, TrotX, TrotY, TrotZ, sigma, molt)
@@ -227,6 +233,6 @@ Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
                 A = U - i*S
                 dados.append(str(f"{i:^5.2f}{U:^20.6f}{S:^20.6f}{H:^20.6f}{G:^20.6f}{A:^20.6f}\n"))
             result = "".join(map(str,dados))
-    with open(path+'/temps/temp.tmp', 'w') as temp:
+    with open(path+'/temps/temp.nyp', 'w') as temp:
                 temp.write(result)
     return result
