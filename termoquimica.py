@@ -8,9 +8,9 @@ Created on Sun Oct 10 23:57:47 2021
 
 import sys
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QMessageBox, QPushButton, QLabel, QApplication, QComboBox, QRadioButton,  QLineEdit, QCheckBox, QGridLayout, QPlainTextEdit, QGroupBox, QComboBox)
+from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QMessageBox, QPushButton, QLabel, QApplication, QComboBox, QRadioButton,  QLineEdit, QCheckBox, QGridLayout, QGroupBox, QComboBox, QTextEdit, QTextEdit, QTableView, QTabWidget, QWidget)
 from PyQt5.QtCore import pyqtSlot, QRect
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QClipboard
 import modulo as termo ## módulo que cálcula as funções termodinâmicas
 import lang ## módulo com os textos da interface
 import os
@@ -61,7 +61,8 @@ class Window(QMainWindow):
         self.tempA.setShortcut("F11")
         self.menubar.setStyleSheet("background:#A9A9A9")
         self.messageBox = QMessageBox()
-        ##Entrada de dados
+
+#-------------------Entrada de dados------------------------------------------
         self.scf = QLabel(self,text=lang.path_scf)
         self.scf.setGeometry(10, 60, 400, 30)
         self.scf.setStyleSheet("color:black;font-size:16px")
@@ -159,19 +160,27 @@ class Window(QMainWindow):
         self.line_Press.setText('1') # pressão padrão 1 atm
 #-------------------------botões----------------------------------------------
         self.btn3 = QPushButton(self,text=lang.calcule)  ## botão calcular
-        self.btn3.setGeometry(QRect(80, 510, 120, 40))
+        self.btn3.setGeometry(QRect(10, 510, 100, 40))
         self.btn3.clicked.connect(self.Print) ## conecta a função print
         self.btn3.setStyleSheet("font-size:16px")
+        self.btn3.setToolTip(lang.calcule1)
         self.btn4 = QPushButton(self,text=lang.save)  ## botão salvar
-        self.btn4.setGeometry(QRect(210, 510, 120, 40))
+        self.btn4.setGeometry(QRect(130, 510, 100, 40))
         self.btn4.clicked.connect(self.Salvar) ## conecta a função salvar
         self.btn4.setStyleSheet("font-size:16px")
+        self.btn4.setToolTip(lang.save1)
         self.btn6 = QPushButton(self,text=lang.edit)  ## botão editar
-        self.btn6.setGeometry(QRect(340, 510, 120, 40))
+        self.btn6.setGeometry(QRect(250, 510, 100, 40))
         self.btn6.clicked.connect(self.Editar) ## conecta a função editar
         self.btn6.setStyleSheet("font-size:16px")
+        self.btn6.setToolTip(lang.edit1)
+        self.btn7 = QPushButton(self,text=lang.copy)  ## botão editar
+        self.btn7.setGeometry(QRect(370, 510, 100, 40))
+        self.btn7.clicked.connect(self.Copiar) ## conecta a função editar
+        self.btn7.setStyleSheet("font-size:16px")
+        self.btn7.setToolTip(lang.copy1)
 #-------------------área de texto---------------------------------------------
-        self.texto = QPlainTextEdit(self)
+        self.texto = QTextEdit(self)
         self.texto.setGeometry(475,30,720,640)
         self.texto.setStyleSheet("background:white")
         self.texto.setReadOnly(True)
@@ -205,7 +214,7 @@ class Window(QMainWindow):
         if self.fileDynmat:
             self.line_dynmat.setText(self.fileDynmat)
     def Salvar(self):
-        self.fileName, _ = QFileDialog.getSaveFileName(self, lang.saveas, ".txt","*.txt")
+        self.fileName, _ = QFileDialog.getSaveFileName(self, lang.saveas, ".dat","*.dat")
         with open (self.fileName, 'w') as saida:
             saida.write(self.texto.toPlainText())
 #--------------------Cálculos termodinâmicos----------------------------------
@@ -277,7 +286,7 @@ class Window(QMainWindow):
 #---------------função para plotar os resultados na tela----------------------
     def Print(self):
         if self.Calcular() != None:
-            self.texto.setPlainText(str(self.Calcular()))
+            self.texto.setText(str(self.Calcular()))
         else:
             pass
 #-----------------------------------------------------------------------------
@@ -287,6 +296,13 @@ class Window(QMainWindow):
         self.close()
     def Editar(self):
         self.texto.setReadOnly(False)
+    def Copiar(self):
+        if self.texto.toPlainText() != '':
+            cb = QApplication.clipboard()
+            cb.setText(self.texto.toPlainText())
+            self.messageBox.about(self,lang.warning, lang.info1)
+        else:
+            self.messageBox.about(self,lang.erro, lang.info2)
     def SimetriaDef(self):
         self.messageBox.about(self, lang.simetria, lang.texto2)
     def ConvertDef(self):
@@ -324,7 +340,7 @@ class Window(QMainWindow):
                 res.append(str(f'{x:^5}\t{y:^15}\n'))
             resultado ="".join(map(str,res))
             self.texto.clear()
-            self.texto.setPlainText(resultado)
+            self.texto.setText(resultado)
 #--------------------Temperatura x entropia-----------------------------------
     def SetarS(self):
         if self.Calcular() != None:
@@ -335,7 +351,7 @@ class Window(QMainWindow):
                 res.append(str(f'{x:^5}\t{y:^15}\n'))
             resultado ="".join(map(str,res))
             self.texto.clear()
-            self.texto.setPlainText(resultado)
+            self.texto.setText(resultado)
 #-------------------Temperatura x entalpia------------------------------------
     def SetarH(self):
         if self.Calcular() != None:
@@ -346,7 +362,7 @@ class Window(QMainWindow):
                 res.append(str(f'{x:^5}\t{y:^15}\n'))
             resultado ="".join(map(str,res))
             self.texto.clear()
-            self.texto.setPlainText(resultado)
+            self.texto.setText(resultado)
 #------------------Temperatura x enegia de Gibbs------------------------------
     def SetarG(self):
         if self.Calcular() != None:
@@ -357,7 +373,7 @@ class Window(QMainWindow):
                 res.append(str(f'{x:^5}\t{y:^15}\n'))
             resultado ="".join(map(str,res))
             self.texto.clear()
-            self.texto.setPlainText(resultado)
+            self.texto.setText(resultado)
 #-----------------Temperatura x energia de Helmholtz--------------------------
     def SetarA(self):
         if self.Calcular() != None:
@@ -368,7 +384,7 @@ class Window(QMainWindow):
                 res.append(str(f'{x:^5}\t{y:^15}\n'))
             resultado ="".join(map(str,res))
             self.texto.clear()
-            self.texto.setPlainText(resultado)
+            self.texto.setText(resultado)
 ##############################################################################
 if __name__ == '__main__':
     App = QApplication(sys.argv)
