@@ -15,7 +15,7 @@ MM = 1.660530000e-27 ##fator de conversão massa molecular em Kg
 rbohr = 1.8897261246257702 ## raio de Bohr em angstrom
 #----------------FUNÇÃO PARA LER O ARQUIVO DYNMAT.OUT-------------------------
 def DynRead(dynmat):
-    cm = [] ## lista contendo as frequencias em Hz
+    cm = [] ## lista contendo as frequencias em cm^-1
     with open(dynmat, 'r') as mat_out:
         for lines in mat_out:
             if 'mode' in lines:
@@ -26,8 +26,12 @@ def DynRead(dynmat):
                 cm.append(float(dados[1])) # modos vibracionais em cm^-1
         except:
             pass
+    f_m = [] # elimina frequências imaginárias de átomos congelados
     if cm != []:
-        frequencias = 100*array(cm) # cm^-1 to m^-1
+        for i in cm:
+            if i > 0:
+                f_m.append(i)
+        frequencias = 100*array(f_m) # cm^-1 to m^-1
     else:
         frequencias = None
     return frequencias # modos vibracionais em m^-1
