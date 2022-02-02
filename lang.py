@@ -44,7 +44,7 @@ conv = 'Fatores de conversão'
 msg = 'ajuda'
 f2 = 'Instruções de uso, aperte F2.'
 info = 'Software para cálcular funções termodinâmicas\n\
-    autor: Márcio F. Santos \nemail mpraquedista@gmail.com'
+    autor: Márcio F. Santos \nemail: marcio.santos@ice.ufjf.br'
 texto = """
 # NOTAS DE USO
 Software programado para ler arquivos de saída das versões 6x do Quantum Espresso.
