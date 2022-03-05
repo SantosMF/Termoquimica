@@ -8,9 +8,9 @@ Created on Sun Oct 10 23:57:47 2021
 
 import sys
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QMessageBox, QPushButton, QLabel, QApplication, QComboBox, QRadioButton,  QLineEdit, QCheckBox, QGridLayout, QGroupBox, QComboBox, QTextEdit, QTextEdit, QTableView, QTabWidget, QWidget)
-from PyQt5.QtCore import pyqtSlot, QRect
-from PyQt5.QtGui import QIcon, QClipboard
+from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QMessageBox, QPushButton, QLabel, QApplication, QRadioButton,  QLineEdit, QGroupBox, QTextEdit)
+from PyQt5.QtCore import QRect
+from PyQt5.QtGui import QIcon
 import modulo as termo ## módulo que cálcula as funções termodinâmicas
 import lang ## módulo com os textos da interface
 import os
