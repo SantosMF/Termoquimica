@@ -164,18 +164,18 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
     sigma = int(valores[6]) # número de simetria
     molt  = str(valores[7]) # linear, não-linear ou mono-atômico
     dados = [] # lista para armazenar os resultados
-    dados.append(f'''Energia eletrônica      = {Eel:^25.8f}  kJ/mol
-Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
-    dados.append('\nFunções Termodinâmicas\n\n')
-    dados.append('#T(K)       U(kJ/mol)       S(kJ/mol*K)       H(kJ/mol)       G(kJ/mol)       A(kJ/mol)\n')
+    dados.append(f'''#Energia eletrônica      = {Eel:^25.8f}  kJ/mol\n#Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
+    dados.append('\n#Funções Termodinâmicas\n\n')
+    st = ['#T(K)', 'U(kJ/mol)', 'S(kJ/mol*K)', 'H(kJ/mol)', 'G(kJ/mol)', 'A(kJ/mol)']
+    dados.append(f"{st[0]:^5}{st[1]:^25}{st[2]:^25}{st[3]:^30}{st[4]:^30}{st[5]:30}\n")
 #------------------------------se sólido--------------------------------------
     if sist == 'solido':
         for i in arange(Tmin, Tmax+dT, dT):
             U = ZPE(m) + Eel + Evib(i, m)
             S = Svib(i, m)
-            H = U
+            H = U # A rigor H = U + P*V, mas para sólidos P*V pode ser ignorado
             G = H - i*S
-            A = G
+            A = G # A rigor A = U - TS, mas U = H = G
             dados.append(str(f"{i:^5.2f}{U:^20.6f}{S:^20.6f}{H:^20.6f}{G:^20.6f}{A:^20.6f}\n"))
         result = "".join(map(str,dados)) # retorna os dados para sistema sólido
 #-----------------------------se molécula ------------------------------------
@@ -196,7 +196,7 @@ Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
             for i in arange(Tmin, Tmax+dT, dT):
                 U = ZPE(m) + Eel + Evib(i, m) + Etrans(i) + Erot(i, molt) #E_interna
                 S = Svib(i, m) + Strans(i, P, M) + Srot(i, Trot,0,0,0, sigma, molt)# entropia
-                H = U + (k*i)/1000*N_A # entalpia
+                H = U + (R*i)/1000 # entalpia
                 G = H - i*S # gibbs
                 A = U - i*S # helmholtz
                 dados.append(str(f"{i:^5.2f}{U:^20.6f}{S:^20.6f}{H:^20.6f}{G:^20.6f} {A:^20.6f}\n"))
@@ -222,7 +222,7 @@ Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
             for i in arange(Tmin, Tmax+dT, dT):
                 U = ZPE(m) + Eel + Evib(i, m) + Etrans(i) + Erot(i, molt)
                 S = Svib(i, m) + Strans(i, P, M) + Srot(i, 0, TrotX, TrotY, TrotZ, sigma, molt)
-                H = U + (k*i)/1000*N_A
+                H = U + (R*i)/1000
                 G = H - i*S
                 A = U - i*S
                 dados.append(str(f"{i:^5.2f}{U:^20.6f}{S:^20.6f}{H:^20.6f}{G:^20.6f} {A:^20.6f}\n"))
@@ -230,9 +230,9 @@ Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
 #----------------------------se gás monoatômico-------------------------------
         elif molt =='atomo':
             for i in arange(Tmin, Tmax+dT, dT):
-                U = ZPE(m) + Eel + Evib(i, m) + Etrans(i)
-                S = Svib(i, m) + Strans(i, P, M)
-                H = U + (k*i)/1000*N_A
+                U = Eel + Etrans(i)
+                S = Strans(i, P, M)
+                H = U + (R*i)/1000
                 G = H - i*S
                 A = U - i*S
                 dados.append(str(f"{i:^5.2f}{U:^20.6f}{S:^20.6f}{H:^20.6f}{G:^20.6f}{A:^20.6f}\n"))
