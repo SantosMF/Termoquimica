@@ -4,7 +4,7 @@
 from numpy import exp, e, pi, log, sqrt, array, arange
 import os
 path = os.path.dirname(os.path.realpath(__file__))
-#-------Constantes usadas-----------------------------------------------------
+#------- Constantes usadas  -----------------------------------------------------
 k = 1.380649e-23 # constante de Boltzmann J/K
 h = 6.62607015e-34 # constante de Plank J.s ou J.Hz^-1
 hbar = 1.054571817e-34 #constante de Planck reduzida  J.s
@@ -13,7 +13,7 @@ R = 8.314462618 # constante molar dos gases J.mol^-1.K^-1
 N_A = 6.02214076e+23 # constante de Avogadro mol^-1
 MM = 1.660530000e-27 ##fator de conversão massa molecular em Kg
 rbohr = 1.8897261246257702 ## raio de Bohr em angstrom
-#----------------FUNÇÃO PARA LER O ARQUIVO DYNMAT.OUT-------------------------
+#---------------- FUNÇÃO PARA LER O ARQUIVO DYNMAT.OUT --------------------------
 def DynRead(dynmat):
     cm = [] ## lista contendo as frequencias em cm^-1
     with open(dynmat, 'r') as mat_out:
@@ -35,7 +35,7 @@ def DynRead(dynmat):
     else:
         frequencias = None
     return frequencias # modos vibracionais em m^-1
-#-------------FUNÇÃO PARA LER O ARQUIVO SCF.OUT-------------------------------
+#-------------FUNÇÃO PARA LER O ARQUIVO SCF.OUT---------------------------------
 def ScfRead(scf_out):
     atomos = [] # símbolo dos átomos
     x = [] # coordenadas x
@@ -46,7 +46,7 @@ def ScfRead(scf_out):
     nat = 0 ## número de átomos na célula ## variável global
     ntp = 0 ## número de tipos de átomos ## variável global
     celldm = 0
-#-----------------abre o arquivo no modo leitura------------------------------
+#-----------------abre o arquivo no modo leitura--------------------------------
     with open(scf_out, 'r') as outscf:
         for lines in outscf:
             if 'number of atoms/cell' in lines:
@@ -75,14 +75,14 @@ def ScfRead(scf_out):
             pass
         for lines in outscf:
             if "!" in lines: # localiza a energia eletrônica1312.7497558593593
-                E_elec = (float(lines[32:50])*1312.7496997450642) # kcal/mol
-#---------------término da leitura arquivo *.scf.out--------------------------
+                E_elec = (float(lines[32:50])*1312.7496997450642) #Ry to kJ/mol
+#---------------término da leitura arquivo *.scf.out----------------------------
     massa = 0
     for i in label:
         massa = massa + atom[i]
     return  E_elec, massa, atom, label, x, y, z
 ##############################################################################
-#-------------------------contribuições vibracionais--------------------------
+#-------------------------contribuições vibracionais----------------------------
 def ZPE(m): # m = modos vibracionais em m^-1
     zpe = sum(0.5*h*c*m)/1000*N_A ##kJ/mol
     return zpe
