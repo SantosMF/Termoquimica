@@ -176,7 +176,7 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
             H = U # A rigor H = U + P*V, mas para sólidos P*V pode ser ignorado
             G = H - i*S
             A = G # A rigor A = U - TS, mas U = H = G
-            dados.append(str(f"{i:^5.2f}{U:^20.6f}{S:^20.6f}{H:^20.6f}{G:^20.6f}{A:^20.6f}\n"))
+            dados.append(str(f"{i:>7.2f}{U:>20.6f}{S:>20.6f}{H:>20.6f}{G:>20.6f}{A:>20.6f}\n"))
         result = "".join(map(str,dados)) # retorna os dados para sistema sólido
 #-----------------------------se molécula ------------------------------------
     elif sist == 'molecula':
@@ -199,9 +199,9 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
                 H = U + (R*i)/1000 # entalpia
                 G = H - i*S # gibbs
                 A = U - i*S # helmholtz
-                dados.append(str(f"{i:^5.2f}{U:^20.6f}{S:^20.6f}{H:^20.6f}{G:^20.6f} {A:^20.6f}\n"))
+                dados.append(str(f"{i:>7.2f}{U:>20.6f}{S:>20.6f}{H:>20.6f}{G:>20.6f}{A:>20.6f}\n"))
             result = "".join(map(str,dados))
-#-----------------------------se molécula não linear--------------------------
+#-------------------------------------------------- se molécula não linear ------------------------------------------------
         elif molt == 'nolinear':
             #------------------centro de massa molecula não linear------------
             cX, cY, cZ = 0, 0, 0 # centro de massa
@@ -225,9 +225,9 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
                 H = U + (R*i)/1000
                 G = H - i*S
                 A = U - i*S
-                dados.append(str(f"{i:^5.2f}{U:^20.6f}{S:^20.6f}{H:^20.6f}{G:^20.6f} {A:^20.6f}\n"))
+                dados.append(str(f"{i:>7.2f}{U:>20.6f}{S:>20.6f}{H:>20.6f}{G:>20.6f}{A:>20.6f}\n"))
             result = "".join(map(str,dados))
-#----------------------------se gás monoatômico-------------------------------
+#--------------------------------------------- se gás monoatômico ---------------------------------------------------------
         elif molt =='atomo':
             for i in arange(Tmin, Tmax+dT, dT):
                 U = Eel + Etrans(i)
@@ -235,7 +235,7 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
                 H = U + (R*i)/1000
                 G = H - i*S
                 A = U - i*S
-                dados.append(str(f"{i:^5.2f}{U:^20.6f}{S:^20.6f}{H:^20.6f}{G:^20.6f}{A:^20.6f}\n"))
+                dados.append(str(f"{i:>7.2f}{U:>20.6f}{S:>20.6f}{H:>20.6f}{G:>20.6f}{A:>20.6f}\n"))
             result = "".join(map(str,dados))
     with open(path+'/temps/temp.nyp', 'w') as temp:
                 temp.write(result)
