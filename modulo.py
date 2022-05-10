@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#     Módulo para computar as contribuições termodinâmicas
+"""
+Módulo para computar as contribuições termodinâmicas
+Created on Sun Oct 12 20:07:14 2021
+@author: marciosf600@gmail.com
+"""
 from numpy import exp, e, pi, log, sqrt, array, arange
 import os
 path = os.path.dirname(os.path.realpath(__file__))
-#------- Constantes usadas  -----------------------------------------------------
-k = 1.380649e-23 # constante de Boltzmann J/K
-h = 6.62607015e-34 # constante de Plank J.s ou J.Hz^-1
-hbar = 1.054571817e-34 #constante de Planck reduzida  J.s
-c = 299792458 # velocidade da luz no vácuo  m/s
-R = 8.314462618 # constante molar dos gases J.mol^-1.K^-1
-N_A = 6.02214076e+23 # constante de Avogadro mol^-1
-MM = 1.660530000e-27 ##fator de conversão massa molecular em Kg
-rbohr = 1.8897261246257702 ## raio de Bohr em angstrom
-#---------------- FUNÇÃO PARA LER O ARQUIVO DYNMAT.OUT --------------------------
+#--------------------------- Constantes usadas  -------------------------------
+k = 1.380649e-23            # constante de Boltzmann J/K
+h = 6.62607015e-34          # constante de Plank J.s ou J.Hz^-1
+hbar = 1.054571817e-34      # constante de Planck reduzida  J.s
+c = 299792458               # velocidade da luz no vácuo  m/s
+R = 8.314462618             # constante molar dos gases J.mol^-1.K^-1
+N_A = 6.02214076e+23        # constante de Avogadro mol^-1
+MM = 1.660530000e-27        # fator de conversão massa molecular em Kg
+rbohr = 1.8897261246257702  # raio de Bohr em angstrom
+#---------------- FUNÇÃO PARA LER O ARQUIVO DYNMAT.OUT ------------------------
 def DynRead(dynmat):
     cm = [] ## lista contendo as frequencias em cm^-1
     with open(dynmat, 'r') as mat_out:
@@ -35,7 +39,7 @@ def DynRead(dynmat):
     else:
         frequencias = None
     return frequencias # modos vibracionais em m^-1
-#-------------FUNÇÃO PARA LER O ARQUIVO SCF.OUT---------------------------------
+#------------- FUNÇÃO PARA LER O ARQUIVO SCF.OUT ------------------------------
 def ScfRead(scf_out):
     atomos = [] # símbolo dos átomos
     x = [] # coordenadas x
@@ -46,7 +50,7 @@ def ScfRead(scf_out):
     nat = 0 ## número de átomos na célula ## variável global
     ntp = 0 ## número de tipos de átomos ## variável global
     celldm = 0
-#-----------------abre o arquivo no modo leitura--------------------------------
+#-----------------abre o arquivo no modo leitura-------------------------------
     with open(scf_out, 'r') as outscf:
         for lines in outscf:
             if 'number of atoms/cell' in lines:
@@ -76,13 +80,13 @@ def ScfRead(scf_out):
         for lines in outscf:
             if "!" in lines: # localiza a energia eletrônica1312.7497558593593
                 E_elec = (float(lines[32:50])*1312.7496997450642) #Ry to kJ/mol
-#---------------término da leitura arquivo *.scf.out----------------------------
+#---------------término da leitura arquivo *.scf.out---------------------------
     massa = 0
     for i in label:
         massa = massa + atom[i]
     return  E_elec, massa, atom, label, x, y, z
-##############################################################################
-#-------------------------contribuições vibracionais----------------------------
+###############################################################################
+#----------------- contribuições vibracionais ---------------------------------
 def ZPE(m): # m = modos vibracionais em m^-1
     zpe = sum(0.5*h*c*m)/1000*N_A ##kJ/mol
     return zpe
@@ -107,7 +111,7 @@ def Svib(T, m): # m = modos vibracionais em m^-1
                 svib = svib + ((teta/T)/(e**(teta/T)-1)-log(1-e**(-teta/T)))
         svib = svib*R/1000 ## kJ/K*mol
     return svib
-#---------------------------contribuições translacionais----------------------
+#-------------------------- contribuições translacionais ----------------------
 def Etrans(T):
     e_trans = (3/2)*k*T ### função ok
     return e_trans/1000*N_A ## kJ/mol
@@ -118,14 +122,12 @@ def Strans(T, P, M):
         s_trans = k*(log(((2*pi*M*k*T)/h**2)**1.5 * (k*T)/P)+2.5)
         s_trans = s_trans/1000*N_A ## kJ/mol
     return s_trans
-#---------------------------contribuições rotacionais-------------------------
+#-------------------------- contribuições rotacionais -------------------------
 def Erot(T, tipo):
     if tipo == 'linear':
         e_rot = k*T
     elif tipo == 'nolinear':
         e_rot = (3/2)*k*T
-    elif tipo == 'atomo':
-        e_rot = 0
     return e_rot/1000*N_A  ## kJ/mol
 def Srot(T, Trot, TrotX, TrotY, TrotZ, sigma, tipo): # M = massa em kg
 #   Srot(i, 0, TrotX, TrotY, TrotZ, sigma, molt)
@@ -136,20 +138,18 @@ def Srot(T, Trot, TrotX, TrotY, TrotZ, sigma, tipo): # M = massa em kg
             s_rot = (k + k*log((1.0/sigma)*(T/Trot)))/1000*N_A # J/K to kJ/mol*K
         elif tipo == 'nolinear':
             s_rot = ((3/2)*k + k*log((sqrt(pi)/sigma)*((T**(3/2))/sqrt(TrotX*TrotY*TrotZ))))/1000*N_A # J/K to kJ/mol*K
-        elif tipo == 'atomo':
-            s_rot = 0
     return s_rot ## kJ/K*mol
-#=====================Função que recebe os dados da gui======================#
-#               valores[0] == solido ou molécula                             #
-#               valores[1] == path do arquivo scf.out                        #
-#               valores[2] == path  do arquivo out dynmat.x                  #
-#               valores[3] == temperatura mínima                             #
-#               valores[4] == temperatura máxima                             #
-#               valores[5] == pressão                                        #
-#               valores[6] == número de simetria                             #
-#               valores[7] == não-linear, linear ou átomo                    #
-#               valores[8] == Delta T                                        #
-#============================================================================#
+#=====================Função que recebe os dados da gui=======================#
+#                valores[0] == solido ou molécula                             #
+#                valores[1] == path do arquivo scf.out                        #
+#                valores[2] == path  do arquivo out dynmat.x                  #
+#                valores[3] == temperatura mínima                             #
+#                valores[4] == temperatura máxima                             #
+#                valores[5] == pressão                                        #
+#                valores[6] == número de simetria                             #
+#                valores[7] == não-linear, linear ou átomo                    #
+#                valores[8] == Delta T                                        #
+#=============================================================================#
 def Termo(valores): ## valores --> tupla com os dados recebidos da gui
     scf = ScfRead(valores[1]) # dados extraidos do arquivo scf.out
     m = DynRead(valores[2]) # array com os modos vibracionais em m^-1
@@ -166,9 +166,9 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
     dados = [] # lista para armazenar os resultados
     dados.append(f'''#Energia eletrônica      = {Eel:^25.8f}  kJ/mol\n#Energia de Ponto Zero   = {ZPE(m):^25.8f}  kJ/mol\n''')
     dados.append('\n#Funções Termodinâmicas\n\n')
-    st = ['#T(K)', 'U(kJ/mol)', 'S(kJ/mol*K)', 'H(kJ/mol)', 'G(kJ/mol)', 'A(kJ/mol)']
-    dados.append(f"{st[0]:^5}{st[1]:^25}{st[2]:^25}{st[3]:^30}{st[4]:^30}{st[5]:30}\n")
-#------------------------------se sólido--------------------------------------
+    st = ['# T(K)', 'U(kJ/mol)', 'S(kJ/mol*K)', 'H(kJ/mol)', 'G(kJ/mol)', 'A(kJ/mol)']
+    dados.append(f"{st[0]:>7}{st[1]:>20}{st[2]:>20}{st[3]:>20}{st[4]:>20}{st[5]:>20}\n")
+#------------------------------ se sólido -------------------------------------
     if sist == 'solido':
         for i in arange(Tmin, Tmax+dT, dT):
             U = ZPE(m) + Eel + Evib(i, m)
@@ -178,9 +178,9 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
             A = G # A rigor A = U - TS, mas U = H = G
             dados.append(str(f"{i:>7.2f}{U:>20.6f}{S:>20.6f}{H:>20.6f}{G:>20.6f}{A:>20.6f}\n"))
         result = "".join(map(str,dados)) # retorna os dados para sistema sólido
-#-----------------------------se molécula ------------------------------------
+#----------------------------  se molécula ------------------------------------
     elif sist == 'molecula':
-#---------------------------se molécula linear--------------------------------
+#-------------------------- se molécula linear --------------------------------
         if molt == 'linear':
             #------------------------centro de massa molécula linear----------
             cX, cY, cZ = 0, 0, 0 #
@@ -201,7 +201,7 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
                 A = U - i*S # helmholtz
                 dados.append(str(f"{i:>7.2f}{U:>20.6f}{S:>20.6f}{H:>20.6f}{G:>20.6f}{A:>20.6f}\n"))
             result = "".join(map(str,dados))
-#-------------------------------------------------- se molécula não linear ------------------------------------------------
+#------------------------- se molécula não linear -----------------------------
         elif molt == 'nolinear':
             #------------------centro de massa molecula não linear------------
             cX, cY, cZ = 0, 0, 0 # centro de massa
@@ -227,7 +227,7 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
                 A = U - i*S
                 dados.append(str(f"{i:>7.2f}{U:>20.6f}{S:>20.6f}{H:>20.6f}{G:>20.6f}{A:>20.6f}\n"))
             result = "".join(map(str,dados))
-#--------------------------------------------- se gás monoatômico ---------------------------------------------------------
+#--------------------------- se gás monoatômico -------------------------------
         elif molt =='atomo':
             for i in arange(Tmin, Tmax+dT, dT):
                 U = Eel + Etrans(i)

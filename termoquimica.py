@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Oct 10 23:57:47 2021
-
-@author: marcio
+@author: marciosf600@gmail.com
 """
 
 import sys
@@ -61,7 +60,6 @@ class Window(QMainWindow):
         self.tempA.setShortcut("F11")
         self.menubar.setStyleSheet("background:#A9A9A9")
         self.messageBox = QMessageBox()
-
 #-------------------Entrada de dados------------------------------------------
         self.scf = QLabel(self,text=lang.path_scf)
         self.scf.setGeometry(10, 60, 400, 30)
@@ -204,7 +202,7 @@ class Window(QMainWindow):
             self.line_sym.setEnabled(True)
             self.sym.setEnabled(True)
 #-----------------Aqui termina a interface------------------------------------
-##############################################################################
+#---------------- Funções para enviar os dados para o módulo -----------------
     def open_scf(self): # pesquisar arquivos
         self.file_scf, _ = QFileDialog.getOpenFileName(self, lang.abrir, "","*.out")
         if self.file_scf:
@@ -289,7 +287,7 @@ class Window(QMainWindow):
             self.texto.setText(str(self.Calcular()))
         else:
             pass
-#-----------------------------------------------------------------------------
+#------------------------ Menu da interface ----------------------------------
     def AjudaDef(self):
         self.messageBox.about(self, lang.ajuda, lang.texto)
     def FecharDef(self):
