@@ -1,5 +1,5 @@
 # Termoquimica.py
-Este código foi desenvolvido para calcular funções termodinâmicas. Para configurá-lo abra um terminal e dê o comando:
+Este código foi desenvolvido para calcular funções termodinâmicas usando arquivos de saída do pacote QuantumESPRESSO - v. >6.4.1. Para configurá-lo abra um terminal e dê o comando:
                      
                      python3 setup.py
                      
@@ -23,9 +23,11 @@ F9  = 'Temperatura x Entalpia'\
 F10 = 'Temperatura x E_Gibbs'\
 F11 = 'Temperatura x E_Helmholtz'
 
-Software programado para ler arquivos de saída das versões 6x do Quantum Espresso. Temperatura mínima obrigatóriamente deve ser diferente da temperatura máxima. Caso deseje plotar os resultados para apenas um valor de T, faça da seguinte forma:
+Temperatura mínima obrigatóriamente deve ser diferente da temperatura máxima. Caso deseje plotar os resultados para apenas um valor de T, faça da seguinte forma:
 
   Tmin; (Tmax = Tmin + Delta T); Delta T
+  Ex: para calcular em T = 100 K, faça:
+          Tmin = 100; Tmax = 110; Delta T = 10
 
 Após inserir os dados, basta clicar em calcular que os dados serão exibidos na área de texto. 
 
