@@ -23,7 +23,7 @@ F9  = 'Temperatura x Entalpia'\
 F10 = 'Temperatura x E_Gibbs'\
 F11 = 'Temperatura x E_Helmholtz'
 
-Temperatura mínima obrigatóriamente deve ser diferente da temperatura máxima. Caso deseje plotar os resultados para apenas um valor de T, faça da seguinte forma:
+Temperatura mínima deve, obrigatóriamente, ser diferente da temperatura máxima. Caso deseje plotar os resultados para apenas um valor de T, faça da seguinte forma:
 
   Tmin; (Tmax = Tmin + Delta T); Delta T
   Ex: para calcular em T = 100 K, faça:
@@ -31,9 +31,11 @@ Temperatura mínima obrigatóriamente deve ser diferente da temperatura máxima.
 
 Após inserir os dados, basta clicar em calcular que os dados serão exibidos na área de texto. 
 
-Para salvar os dados que estão mostrados na tela basta clicar no botão salvar, fornecer um nome para o arquivo e setar o diretório para ele.
+Para salvar os dados que estão mostrados na tela clique no botão salvar, forneça um nome para o arquivo e indique o diretório para ele.
 Por padrão, a área de texto é definida como somente leitura. Caso deseje editar os dados basta clicar no botão "Editar".
 
 Caso deseje copiar os dados exibidos na área de texto, basta clicar no botão copiar.
 
-Alternativamente ao uso da gui, o usuário pode optar por uma versão em linha de comando (com funcionalidades reduzidas). Para isso basta executar o código console.py em um terminal. Este módulo necessita apenas da biblioteca matemática numpy, que pode ser instalada com o comando python3 -m pip install numpy
+Alternativamente ao uso da interface gráfica (gui), o usuário pode optar por uma versão em linha de comando (com funcionalidades reduzidas). Para isso basta executar o código console.py em um terminal. Este módulo necessita apenas da biblioteca matemática numpy, que pode ser instalada com o comando 
+sudo apt install python3-pip
+python3 -m pip install numpy
