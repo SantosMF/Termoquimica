@@ -154,6 +154,7 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
     scf = ScfRead(valores[1]) # dados extraidos do arquivo scf.out
     m = DynRead(valores[2]) # array com os modos vibracionais em m^-1
     Eel = float(scf[0]) # energia eletrônica em kJ/mol
+    E_zpe = ZPE(m) #retorna a energia de ponto zero
     M = float(scf[1]) # massa em kg
     atom, label, x, y, z = scf[2], scf[3], scf[4], scf[5], scf[6]
     sist  = str(valores[0]) # sólido ou molécula
@@ -171,7 +172,7 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
 #------------------------------ se sólido -------------------------------------
     if sist == 'solido':
         for i in arange(Tmin, Tmax+dT, dT):
-            U = ZPE(m) + Eel + Evib(i, m)
+            U = E_zpe + Eel + Evib(i, m)
             S = Svib(i, m)
             H = U # A rigor H = U + P*V, mas para sólidos P*V pode ser ignorado
             G = H - i*S
@@ -194,7 +195,7 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
             Trot = (h**2)/(2*inercia*k*4*(pi**2)) # temperatura rotacional
             # iterador para calcular as energias
             for i in arange(Tmin, Tmax+dT, dT):
-                U = ZPE(m) + Eel + Evib(i, m) + Etrans(i) + Erot(i, molt) #E_interna
+                U = E_zpe + Eel + Evib(i, m) + Etrans(i) + Erot(i, molt) #E_interna
                 S = Svib(i, m) + Strans(i, P, M) + Srot(i, Trot,0,0,0, sigma, molt)# entropia
                 H = U + (R*i)/1000 # entalpia
                 G = H - i*S # gibbs
@@ -220,7 +221,7 @@ def Termo(valores): ## valores --> tupla com os dados recebidos da gui
             TrotY = (h**2)/(2*inerciaY*k*4*(pi**2))
             TrotZ = (h**2)/(2*inerciaZ*k*4*(pi**2))
             for i in arange(Tmin, Tmax+dT, dT):
-                U = ZPE(m) + Eel + Evib(i, m) + Etrans(i) + Erot(i, molt)
+                U = E_zpe + Eel + Evib(i, m) + Etrans(i) + Erot(i, molt)
                 S = Svib(i, m) + Strans(i, P, M) + Srot(i, 0, TrotX, TrotY, TrotZ, sigma, molt)
                 H = U + (R*i)/1000
                 G = H - i*S
